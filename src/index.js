@@ -7,6 +7,7 @@ const port = 3000;
 
 const route = require('./routes');
 const db = require('./config/db');
+var methodOverride = require('method-override');
 
 // Connect DB
 db.connect();
@@ -19,12 +20,21 @@ app.use(
     }),
 );
 app.use(express.json());
+app.use(methodOverride('_method'));
 
 //HTTP logger
 // app.use(morgan("combined"));
 
 //Temple engine
-app.engine('hbs', engine({ extname: '.hbs' }));
+app.engine(
+    'hbs',
+    engine({
+        extname: '.hbs',
+        helpers: {
+            sum: (a, b) => a + b,
+        },
+    }),
+);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
 //route init
